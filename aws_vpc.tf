@@ -182,10 +182,10 @@ resource "aws_security_group" "my_sample_privatelink_sg_bytf" {
   name   = "my_sample_privatelink_sg_bytf"
   vpc_id = aws_vpc.my_sample_vpc_bytf.id
   ingress {
-    from_port   = 22
-    to_port     = 22
+    from_port   = 443
+    to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.my_sample_container_sg_bytf.id]
   }
   egress {
     from_port   = 0
