@@ -105,8 +105,9 @@ resource "aws_route_table_association" "my_sample_rt_assoc_private_c_bytf" {
 }
 
 //セキュリティグループ
-resource "aws_security_group" "my_sample_sg_bytf" {
-  name   = "my_sample_sg_bytf"
+//ec2
+resource "aws_security_group" "my_sample_ec2_sg_bytf" {
+  name   = "my_sample_ec2_sg_bytf"
   vpc_id = aws_vpc.my_sample_vpc_bytf.id
   ingress {
     from_port   = 22
@@ -122,4 +123,74 @@ resource "aws_security_group" "my_sample_sg_bytf" {
   }
 }
 
-//ネットワークACLはなんか勝手にできてた
+//db
+resource "aws_security_group" "my_sample_db_sg_bytf" {
+  name   = "my_sample_db_sg_bytf"
+  vpc_id = aws_vpc.my_sample_vpc_bytf.id
+  ingress {
+    from_port   = 1433
+    to_port     = 1433
+    protocol    = "tcp"
+    cidr_blocks = ["10.50.0.0/16"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+//alb
+resource "aws_security_group" "my_sample_alb_sg_bytf" {
+  name   = "my_sample_alb_sg_bytf"
+  vpc_id = aws_vpc.my_sample_vpc_bytf.id
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+//container
+resource "aws_security_group" "my_sample_container_sg_bytf" {
+  name   = "my_sample_container_sg_bytf"
+  vpc_id = aws_vpc.my_sample_vpc_bytf.id
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+//privatelink
+resource "aws_security_group" "my_sample_privatelink_sg_bytf" {
+  name   = "my_sample_privatelink_sg_bytf"
+  vpc_id = aws_vpc.my_sample_vpc_bytf.id
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
