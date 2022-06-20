@@ -194,3 +194,72 @@ resource "aws_security_group" "my_sample_privatelink_sg_bytf" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+//VPCエンドポイント
+//ecr_api(ECS-ECR接続に利用)
+resource "aws_vpc_endpoint" "my_sample_privatelink_ecr_api_bytf" {
+  vpc_id            = aws_vpc.my_sample_vpc_bytf.id
+  service_name      = "com.amazonaws.ap-northeast-1.ecr.api"
+  vpc_endpoint_type = "Interface"
+
+  security_group_ids = [
+    aws_security_group.my_sample_privatelink_sg_bytf.id
+  ]
+  tags = {
+    Name = "my_sample_privatelink_ecr_api_bytf"
+  }
+}
+
+//ecr_dkr(ECS-ECR接続に利用)
+resource "aws_vpc_endpoint" "my_sample_privatelink_ecr_dkr_bytf" {
+  vpc_id            = aws_vpc.my_sample_vpc_bytf.id
+  service_name      = "com.amazonaws.ap-northeast-1.ecr.dkr"
+  vpc_endpoint_type = "Interface"
+
+  security_group_ids = [
+    aws_security_group.my_sample_privatelink_sg_bytf.id
+  ]
+  tags = {
+    Name = "my_sample_privatelink_ecr_dkr_bytf"
+  }
+}
+
+//logs(ECS-CloudWatch logs接続に利用)
+resource "aws_vpc_endpoint" "my_sample_privatelink_logs_bytf" {
+  vpc_id            = aws_vpc.my_sample_vpc_bytf.id
+  service_name      = "com.amazonaws.ap-northeast-1.logs"
+  vpc_endpoint_type = "Interface"
+
+  security_group_ids = [
+    aws_security_group.my_sample_privatelink_sg_bytf.id
+  ]
+  tags = {
+    Name = "my_sample_privatelink_logs_bytf"
+  }
+}
+
+//S3(ECS-S3接続に利用)
+resource "aws_vpc_endpoint" "my_sample_privatelink_s3_bytf" {
+    vpc_id          = aws_vpc.my_sample_vpc_bytf.id
+    service_name      = "com.amazonaws.ap-northeast-1.s3"
+    policy = <<POLICY
+    {
+        "Statement": [
+            {
+                "Action": "*",
+                "Effect": "Allow",
+                "Resource": "*",
+                "Principal": "*"
+            }
+        ]
+    }
+    POLICY
+  tags = {
+    Name = "my_sample_privatelink_s3_bytf"
+  }
+}
+
+resource "aws_vpc_endpoint_route_table_association" "my_sample_privatelink_s3_route_table_assoc_bytf" {
+    vpc_endpoint_id = aws_vpc_endpoint.my_sample_privatelink_s3_bytf.id
+    route_table_id  = aws_route_table.my_sample_private_rtb_bytf.id
+}
