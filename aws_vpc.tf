@@ -195,6 +195,42 @@ resource "aws_security_group" "my_sample_privatelink_sg_bytf" {
   }
 }
 
+//lambda
+resource "aws_security_group" "my_sample_lambda_sg_bytf" {
+  name   = "my_sample_lambda_sg_bytf"
+  vpc_id = aws_vpc.my_sample_vpc_bytf.id
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  # egress {
+  #   from_port   = 0
+  #   to_port     = 0
+  #   protocol    = "-1"
+  #   cidr_blocks = ["0.0.0.0/0"]
+  # }
+}
+
+resource "aws_security_group_rule" "my_sample_lambda_sg_engress_all_bytf" {
+  type        = "egress"
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
+  security_group_id = "${aws_security_group.my_sample_lambda_sg_bytf.id}"
+}
+
+resource "aws_security_group_rule" "my_sample_lambda_sg_engress_db_bytf" {
+  type        = "egress"
+  from_port   = 1433
+  to_port     = 1433
+  protocol    = "tcp"
+  cidr_blocks = ["10.50.0.0/16"]
+  security_group_id = "${aws_security_group.my_sample_lambda_sg_bytf.id}"
+}
+
 //VPCエンドポイント
 //ecr_api(ECS-ECR接続に利用)
 resource "aws_vpc_endpoint" "my_sample_privatelink_ecr_api_bytf" {
