@@ -1,4 +1,6 @@
-//VPC
+/*
+VPC
+*/
 resource "aws_vpc" "my_sample_vpc_bytf" {
   cidr_block           = "10.50.0.0/16"
   enable_dns_hostnames = true
@@ -8,6 +10,9 @@ resource "aws_vpc" "my_sample_vpc_bytf" {
   }
 }
 
+/*
+サブネット
+*/
 //サブネット（パブリック a）
 resource "aws_subnet" "my_sample_public_subnet_a_bytf" {
   vpc_id                  = aws_vpc.my_sample_vpc_bytf.id
@@ -56,7 +61,9 @@ resource "aws_subnet" "my_sample_private_subnet_c_bytf" {
   }
 }
 
-//インターネットゲートウェイ
+/*
+インターネットゲートウェイ
+*/
 resource "aws_internet_gateway" "my_sample_igw_bytf" {
   vpc_id                  = aws_vpc.my_sample_vpc_bytf.id
   tags = {
@@ -64,6 +71,9 @@ resource "aws_internet_gateway" "my_sample_igw_bytf" {
   }
 }
 
+/*
+ルートテーブル
+*/
 //ルートテーブル(パブリック)
 resource "aws_route_table" "my_sample_public_rtb_bytf" {
   vpc_id                  = aws_vpc.my_sample_vpc_bytf.id
@@ -104,7 +114,9 @@ resource "aws_route_table_association" "my_sample_rt_assoc_private_c_bytf" {
   route_table_id = aws_route_table.my_sample_private_rtb_bytf.id
 }
 
-//セキュリティグループ
+/*
+セキュリティグループ
+*/
 //ec2
 resource "aws_security_group" "my_sample_ec2_sg_bytf" {
   name   = "my_sample_ec2_sg_bytf"
@@ -231,7 +243,9 @@ resource "aws_security_group_rule" "my_sample_lambda_sg_engress_db_bytf" {
   security_group_id = "${aws_security_group.my_sample_lambda_sg_bytf.id}"
 }
 
-//VPCエンドポイント
+/*
+VPCエンドポイント
+*/
 //ecr_api(ECS-ECR接続に利用)
 resource "aws_vpc_endpoint" "my_sample_privatelink_ecr_api_bytf" {
   vpc_id            = aws_vpc.my_sample_vpc_bytf.id

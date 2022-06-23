@@ -1,4 +1,6 @@
-//DB見る踏み台用
+/*
+DB見る踏み台用
+*/
 resource "aws_instance" "my_sample_bastion_ec2_bytf" {
   ami                    = "ami-09d28faae2e9e7138" # Amazon Linux 2
   instance_type          = "t2.micro"
@@ -20,6 +22,9 @@ resource "aws_eip" "my_sample_ec2_eip_bytf" {
   }
 }
 
+/*
+ECS接続ALB周り
+*/
 //ターゲットグループ(ECS接続で利用)
 resource "aws_lb_target_group" "my_sample_targetgroup_bytf" {
   name     = "my-sample-targetgroup-bytf"
