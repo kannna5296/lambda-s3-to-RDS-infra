@@ -19,3 +19,28 @@ resource "aws_eip" "my_sample_ec2_eip_bytf" {
     Name = "my_sample_eip_bytf"
   }
 }
+
+//ターゲットグループ(ECS接続で利用)
+resource "aws_lb_target_group" "my_sample_targetgroup_bytf" {
+  name     = "my-sample-targetgroup-bytf"
+  port     = 8080
+  protocol = "HTTP"
+  target_type = "ip"
+  vpc_id   = aws_vpc.my_sample_vpc_bytf.id
+}
+
+//Application Load Balancer(ECS接続で利用)
+resource "aws_lb" "my_sample_alb_bytf" {
+  name               = "my-sample-alb-bytf"
+  internal           = false //internet-facing
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.my_sample_alb_sg_bytf.id]
+  //ループで書きたい
+  subnets            = [aws_subnet.my_sample_public_subnet_a_bytf.id, aws_subnet.my_sample_public_subnet_c_bytf.id]
+
+  enable_deletion_protection = false
+
+  tags = {
+    Name = "my_sample_alb_bytf"
+  }
+}
