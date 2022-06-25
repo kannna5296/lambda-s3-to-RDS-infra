@@ -68,5 +68,21 @@ resource "aws_ecs_task_definition" "my_sample_task_definition_bytf" {
      "FARGATE",
   ]
   //TODO変数化
+  //この番号ってECRに紐づいてるなら、変えないといけない？
   execution_role_arn = "arn:aws:iam::565640681026:role/ecsTaskExecutionRole"
+}
+
+//クラスター
+resource "aws_ecs_cluster" "my_sample_ecs_cluster_bytf" {
+  name = "mysample-cluster"
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+
+  tags = {
+    "Name" = "my_sample_ecs_cluster_bytf"
+  }
+  
 }
