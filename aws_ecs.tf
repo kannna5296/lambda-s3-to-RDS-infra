@@ -43,7 +43,7 @@ resource "aws_ecs_task_definition" "my_sample_task_definition_bytf" {
             value = var.secret["aws_secret_key"]
           },
         ]
-        name      = "mysample-task"
+        name      = "mysample-container"
         image     = "hogehoge" //動かないけどタスク定義は作れる
         essential = true
         portMappings = [
@@ -84,5 +84,27 @@ resource "aws_ecs_cluster" "my_sample_ecs_cluster_bytf" {
   tags = {
     "Name" = "my_sample_ecs_cluster_bytf"
   }
-  
+}
+
+//サービス
+resource "aws_ecs_service" "my_sample_ecs_service_bytf" {
+  name = "mysample-service"
+  cluster = aws_ecs_cluster.my_sample_ecs_cluster_bytf.name
+  task_definition = aws_ecs_task_definition.my_sample_task_definition_bytf.arn
+  launch_type = "FARGATE"
+  //コレ指定しないとLoadBalancer指定のところで落ちる
+  depends_on      = [aws_lb_target_group.my_sample_targetgroup_bytf]
+  network_configuration {
+    subnets = [aws_subnet.my_sample_private_subnet_a_bytf.id]
+    security_groups = [aws_security_group.my_sample_container_sg_bytf.id]
+  }
+
+  //ECSタスクの起動数
+  desired_count = 0
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.my_sample_targetgroup_bytf.arn
+    container_name = "mysample-container"
+    container_port = 8080
+  }
 }

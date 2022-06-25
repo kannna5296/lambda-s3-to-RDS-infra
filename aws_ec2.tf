@@ -27,7 +27,7 @@ ECS接続ALB周り
 */
 //ターゲットグループ(ECS接続で利用)
 resource "aws_lb_target_group" "my_sample_targetgroup_bytf" {
-  name     = "my-sample-targetgroup-bytf"
+  name     = "mysample-tag"
   port     = 8080
   protocol = "HTTP"
   target_type = "ip"
@@ -35,7 +35,7 @@ resource "aws_lb_target_group" "my_sample_targetgroup_bytf" {
 }
 
 //Application Load Balancer(ECS接続で利用)
-resource "aws_lb" "my_sample_alb_bytf" {
+resource "aws_lb" "mysample_alb" {
   name               = "my-sample-alb-bytf"
   internal           = false //internet-facing
   load_balancer_type = "application"
@@ -48,4 +48,17 @@ resource "aws_lb" "my_sample_alb_bytf" {
   tags = {
     Name = "my_sample_alb_bytf"
   }
+}
+
+resource "aws_lb_listener" "my_sample_alb_lisnter_bytf" {
+  port = "8080"
+  protocol = "HTTP"
+
+  load_balancer_arn = aws_lb.mysample_alb.arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.my_sample_targetgroup_bytf.arn
+  }
+  
 }
