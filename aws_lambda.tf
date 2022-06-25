@@ -1,4 +1,5 @@
-//この辺は手でやったほうが便利かもしれん
+# #この辺は手でやったほうが便利かもしれん
+# #zipファイルの管理とかterraformでやると逆に手間そう
 # resource "aws_lambda_function" "mysample_lambda" {
 #   # If the file is not in the current working directory you will need to include a 
 #   # path.module in the filename.
@@ -15,10 +16,17 @@
 #   environment {
 #     variables = {
 #       BUCKET_NAME = aws_s3_bucket.mysample-bucket-myamane.bucket
+#       DB_PASSWORD = var.secret["db_password"]
+#       AWS_ACCESS_KEY = var.secret["aws_access_key"]
+#       AWS_SECRET_KEY = var.secret["aws_secret_key"]
 #       ODBCINI = "/opt/odbc.ini"
 #       ODBCSYSINI = "/opt"
 #       SRC_FILE_ENCODING = "utf-8"
 #     }
+#   }
+#   vpc_config {
+#     security_group_ids = [aws_security_group.my_sample_lambda_sg_bytf.id]
+#     subnet_ids = [aws_subnet.my_sample_private_subnet_a_bytf.id, aws_subnet.my_sample_private_subnet_c_bytf.id]
 #   }
 # }
 
