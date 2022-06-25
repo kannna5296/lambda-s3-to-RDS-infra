@@ -1,3 +1,4 @@
+//(テスト用)時間かかるので欲しい時のみ有効化
 # resource "aws_db_instance" "my_sample_db_instance_bytf" {
 #     identifier = "mysampledb"
 #     allocated_storage = 20
