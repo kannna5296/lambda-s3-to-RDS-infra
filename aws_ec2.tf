@@ -32,6 +32,14 @@ resource "aws_lb_target_group" "my_sample_targetgroup_bytf" {
   protocol = "HTTP"
   target_type = "ip"
   vpc_id   = aws_vpc.my_sample_vpc_bytf.id
+
+  health_check {
+    enabled = true
+    path = "/health_check"
+    protocol = "HTTP"
+    port = "traffic-port"
+    timeout = 5
+  }
 }
 
 //Application Load Balancer(ECS接続で利用)
