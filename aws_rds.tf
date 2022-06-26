@@ -1,36 +1,50 @@
-//RDSインスタンス（mysql）
-resource "aws_db_instance" "my_sample_rds_bytf" {
-  db_subnet_group_name = aws_db_subnet_group.my_sample_rds_subnet_group_bytf.name
-  identifier = "mysampledb"
-  availability_zone = "ap-northeast-1a"
-  allocated_storage    = 20
-  engine               = "mysql"
-  engine_version       = "8.0"
-  instance_class       = "db.t3.micro"
-  db_name              = "mysampledb"
-  username             = "admin"
-  //TODO SecretManager化
-  password             = "pa"
-  parameter_group_name = "default.mysql8.0"
-  skip_final_snapshot  = true
+//(テスト用)時間かかるので欲しい時のみ有効化
+# resource "aws_db_instance" "my_sample_db_instance_bytf" {
+#     identifier = "mysampledb"
+#     allocated_storage = 20
+#     engine = "sqlserver-ex"
+#     engine_version = "15.00.4198.2.v1"
+#     storage_type = "gp2"
+#     instance_class = "db.t3.small"
+#     availability_zone = "ap-northeast-1a"
+#     username = "sa"
+#     password = var.secret["db_password"]
+#     port = 1433
+#     skip_final_snapshot = true
+#     publicly_accessible = true
 
-  #Storage暗号化
-  storage_encrypted = true
-  kms_key_id        = aws_kms_key.my_sample_rds_storage_kms_bytf.arn
+#     db_subnet_group_name = aws_db_subnet_group.my_sample_db_subnet_group_bytf.name
+#     parameter_group_name = aws_db_parameter_group.my_sample_db_parameter_group_bytf.name
+#     option_group_name = aws_db_option_group.my_sample_db_option_group_bytf.name
+# }
 
-  # ライフサイクル設定。
-  lifecycle {
-    # passwordの変更はTerraformとして無視する。セキュリティの観点からインスタンス構築後、手動でパスワードを変更するため。
-    ignore_changes = [password]
-  }
+resource "aws_db_subnet_group" "my_sample_db_subnet_group_bytf" {
+    name = "my_sample_db_subnet_group_bytf"
+    subnet_ids = [
+        aws_subnet.my_sample_private_subnet_a_bytf.id,
+        aws_subnet.my_sample_private_subnet_c_bytf.id,
+    ]
+    tags = {
+        Name = "my_sample_db_subnet_group_bytf"
+    }
 }
 
-resource "aws_db_subnet_group" "my_sample_rds_subnet_group_bytf" {
-  name       = "my_sample_rds_subnet_group_bytf"
-  subnet_ids = [aws_subnet.my_sample_private_subnet_a_bytf.id, aws_subnet.my_sample_private_subnet_c_bytf.id]
-
-  tags = {
-    Name = "my_sample_rds_subnet_group_bytf"
-  }
+resource "aws_db_parameter_group" "my_sample_db_parameter_group_bytf" {
+    description = "Paramter Group for sql-server-ex-15.0"
+    family = "sqlserver-ex-15.0"
+    name = "my-sample-db-parameter-group-bytf"
+    tags = {
+        Name = "my_sample_db_parameter_group_bytf"
+    }
+  
 }
 
+resource "aws_db_option_group" "my_sample_db_option_group_bytf" {
+    name = "my-sample-db-option-group-bytf"
+    option_group_description = "Option Group"
+    engine_name = "sqlserver-ex"
+    major_engine_version = "15.00"
+    tags = {
+        Name = "my_sample_db_option_group_bytf"
+    }
+}
